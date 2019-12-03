@@ -13,5 +13,5 @@ include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} ${GLFW_INCLUDE_D
 
 
 
-add_executable(main main.cpp)
+add_executable(main main.cpp controls_id.h)
 target_link_libraries(main ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLFW_LIBRARIES} ${CMAKE_SOURCE_DIR}/libglui_static.a)
