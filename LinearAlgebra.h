@@ -12,6 +12,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include <iostream>
+#include "controls_id.h"
 namespace la {
     class matrix {
     protected:
@@ -20,19 +21,18 @@ namespace la {
         size_t amount_of_columns_;
     public:
 
-        matrix(size_t const &rows, size_t const &columns) : data_(10 * 10),
+        matrix(size_t const &rows, size_t const &columns, size_t const& capacity = MAX_SIZE ) : data_(capacity*capacity),
                                                             amount_of_rows_(rows),
                                                             amount_of_columns_(columns) {
 
         }
-        bool set_w(size_t new_w)
-        {
-            if(new_w <= 10) {
-                amount_of_columns_ = new_w;
-                return true;
-            }
-            return false;
+
+        matrix(size_t const &dim) : data_(MAX_SIZE * MAX_SIZE),
+                                                            amount_of_rows_(dim),
+                                                            amount_of_columns_(dim) {
+
         }
+
         friend bool can_add(const matrix& A, const matrix& B)
         {
             return A.amount_of_rows_ == B.amount_of_rows_ && A.amount_of_columns_ == B.amount_of_columns_;
@@ -47,20 +47,13 @@ namespace la {
         }
         friend bool can_div(const matrix& A, const matrix& B)
         {
-            return B.is_invertible();
+            return B.is_invertible() && A.amount_of_columns_ == B.amount_of_columns_;
         }
         bool is_invertible() const
         {
             return determinant() != 0;
         }
-        bool set_h(size_t new_h)
-        {
-            if(new_h <= 10) {
-                amount_of_rows_ = new_h;
-                return true;
-            }
-            return false;
-        }
+
         size_t get_h()
         {
             return amount_of_rows_;
@@ -116,13 +109,30 @@ namespace la {
         friend std::ostream &operator<<(std::ostream &cout, matrix const &a);
 
         friend std::istream &operator>>(std::istream &cin, matrix &a);
-    };
+
+        friend bool can_similarity_transformation(const matrix& R, const matrix& H);
+
+        friend matrix similarity_transformation(const matrix& R, const matrix& H);
+
+        matrix principal_leading_submatrix(const size_t dim) const;
+
+        float principal_leading_minor(const size_t dim);
+
+        bool all_corner_minors_greater_rho(const size_t& rho);
+
+        friend matrix intermediate_step(const size_t dim, const matrix& from, const matrix& to);
+
+//        friend bool is_in_R(matrix& R, const float rho = 1);
+    };//
+
 
     matrix transpose(matrix const &a);
 
-    matrix inverse(matrix const &a);
+    matrix inverse(matrix const &a) ;
 
     matrix E(size_t i);
+
+
 }
 
 

@@ -13,7 +13,7 @@
 
 
 #define ID_SPINNER_DIMENSION 100
-#define SIZE_ 3
+#define SIZE_ 2
 
 #define MY_BUTTON_WIDTH 45
 
@@ -25,7 +25,11 @@
 #define ID_BUTTON_EQU 113
 #define ID_BUTTON_InsCInA 114
 #define ID_BUTTON_InsCInB 115
-
+#define  ID_BUTTON_IS_IN_R 116
+#define  ID_BUTTON_IS_IN_H 117
+#define  ID_CHECKBOX_FILE_OUTPUT 118
+#define  ID_YES 119
+#define  ID_NO 120
 //#define MATRIX_AMOUNT 3
 
 //size_t fst_matr
