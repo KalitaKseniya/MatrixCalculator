@@ -30,6 +30,10 @@
 #define  ID_CHECKBOX_FILE_OUTPUT 118
 #define  ID_YES 119
 #define  ID_NO 120
+
+static int wnd_x = 1;
+static int wnd_y = 1;
+
 //#define MATRIX_AMOUNT 3
 
 //size_t fst_matr

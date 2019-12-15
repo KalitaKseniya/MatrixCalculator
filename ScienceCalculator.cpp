@@ -63,7 +63,7 @@ void control_science_cb( int control ) {
         science_calculator_create();
     }
     else
-        {
+    {
         glui->sync_live();
 
     }
@@ -73,7 +73,7 @@ void science_calculator_create()
 {
     glui = GLUI_Master.create_glui( "Science matrix calculator", 0, 1, 1);
     R.spinner_display(glui, control_science_cb);
-  //  R.spinners_are_equal();
+    //  R.spinners_are_equal();
     R.lower_triangular_matrix_display(glui, control_science_cb);
     //R.
     GLUI_Panel* panel_R_set = new GLUI_Panel;

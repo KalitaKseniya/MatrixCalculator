@@ -12,6 +12,7 @@
 
 int main(int argc, char* argv[])
 {
+
     glutInit(&argc, argv);
 //    switch(menu_create())
 //    {
@@ -23,9 +24,8 @@ int main(int argc, char* argv[])
 //        case 3:
 //            return EXIT_SUCCESS;
 //    }
-
     basic_calculator_create();
-  //  science_calculator_create();
+    //science_calculator_create();
     GLUI_Master.set_glutIdleFunc(nullptr );
     glutMainLoop();
     return EXIT_SUCCESS;

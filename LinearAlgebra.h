@@ -21,54 +21,20 @@ namespace la {
         size_t amount_of_columns_;
     public:
 
-        matrix(size_t const &rows, size_t const &columns, size_t const& capacity = MAX_SIZE ) : data_(capacity*capacity),
-                                                            amount_of_rows_(rows),
-                                                            amount_of_columns_(columns) {
+        matrix(size_t const rows, size_t const columns) : data_(columns*rows),
+                                                          amount_of_rows_(rows),
+                                                          amount_of_columns_(columns) {}
 
-        }
+        matrix(size_t const &dim) : data_(dim*dim),
+                                    amount_of_rows_(dim),
+                                    amount_of_columns_(dim) {}
 
-        matrix(size_t const &dim) : data_(MAX_SIZE * MAX_SIZE),
-                                                            amount_of_rows_(dim),
-                                                            amount_of_columns_(dim) {
-
-        }
-
-        friend bool can_add(const matrix& A, const matrix& B)
-        {
-            return A.amount_of_rows_ == B.amount_of_rows_ && A.amount_of_columns_ == B.amount_of_columns_;
-        }
-        friend bool can_sub(const matrix& A, const matrix& B)
-        {
-            return can_add(A,B);
-        }
-        friend bool can_mult(const matrix& A, const matrix& B)
-        {
-            return A.amount_of_columns_ == B.amount_of_rows_;
-        }
-        friend bool can_div(const matrix& A, const matrix& B)
-        {
-            return B.is_invertible() && A.amount_of_columns_ == B.amount_of_columns_;
-        }
-        bool is_invertible() const
-        {
-            return determinant() != 0;
-        }
-
-        size_t get_h()
-        {
-            return amount_of_rows_;
-        }
-        size_t get_w()
-        {
-            return amount_of_columns_;
-        }
-//        matrix(matrix const &rhs) = default;
 
         matrix() = default;
 
-        float const &operator()(size_t const &row, size_t const &column) const;
+        float const &operator()(size_t const row, size_t const column) const;
 
-        float &operator()(size_t const &row, size_t const &column);
+        float &operator()(size_t const row, size_t const column);
 
         matrix &operator+=(matrix const &rhs);
 
@@ -118,11 +84,31 @@ namespace la {
 
         float principal_leading_minor(const size_t dim);
 
-        bool all_corner_minors_greater_rho(const size_t& rho);
+        bool all_corner_minors_greater_rho(const float rho);
+
+        matrix intermediate_step(const matrix &from, const matrix &to);
 
         friend matrix intermediate_step(const size_t dim, const matrix& from, const matrix& to);
 
-//        friend bool is_in_R(matrix& R, const float rho = 1);
+        friend bool can_add(const matrix& A, const matrix& B);
+
+        friend bool can_sub(const matrix& A, const matrix& B);
+
+        friend bool can_mult(const matrix& A, const matrix& B);
+
+        friend bool can_div(const matrix& A, const matrix& B);
+
+        bool is_invertible() const;
+
+        size_t get_h();
+
+        size_t get_w();
+
+        void set_h(size_t new_rows);
+
+        void set_w(size_t new_cols);
+
+        friend bool is_in_R(matrix& R, const float rho);
     };//
 
 

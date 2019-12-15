@@ -7,7 +7,7 @@
 
 
 namespace la {
-    float const &matrix::operator()(size_t const &row, size_t const &column) const {
+    float const &matrix::operator()(size_t const row, size_t const column) const {
         if (row >= amount_of_rows_ || column >= amount_of_columns_) {
 
             char error[256];
@@ -16,11 +16,10 @@ namespace la {
                          row, column, amount_of_rows_, amount_of_columns_);
             throw std::out_of_range(error);
         }
-        // std::cout << "." << row * columns_capacity + column << ".";
-        return data_[row * MAX_SIZE + column];
+        return data_[row * amount_of_columns_ + column];
     }
 
-    float &matrix::operator()(size_t const &row, size_t const &column) {
+    float &matrix::operator()(size_t const row, size_t const column) {
         return const_cast<float &>(const_cast<const matrix *>(this)->operator()(row, column));
     }
 
@@ -134,25 +133,25 @@ namespace la {
             throw std::runtime_error(error);
         }
         //matrix tmp_matrix = principal_leading_submatrix(amount_of_columns_);
-        std::vector<float> tmp;//(tmp_matrix.data_.begin(), data_.end());
+        std::vector<float> tmp(data_.begin(), data_.end());
 
-        for(int i = amount_of_columns_-1; i >= 0; i--) {
-            for (int j = amount_of_rows_ - 1; j >= 0; j--) {
-                tmp.push_back((*this)(i, j));
-            }
-        }
-        float res = 1.0;
+//        for(int i = amount_of_columns_-1; i >= 0; i--) {
+//            for (int j = amount_of_rows_ - 1; j >= 0; j--) {
+//                tmp.push_back((*this)(i, j));
+//            }
+//        }
+        float res = 1.0f;
         for (size_t i = 0; i < amount_of_rows_; i++) {
             size_t change = i;
             for (; change < amount_of_rows_; change++) {
                 if (tmp[change * amount_of_columns_ + i] != 0) break;
             }
             if (change == amount_of_rows_) {
-                return 0.0;
+                return 0.0f;
             }
 
             if (change != i) {
-                res *= -1.0;
+                res *= -1.0f;
                 std::swap_ranges(tmp.begin() + i * amount_of_columns_,
                                  tmp.begin() + (i + 1) * amount_of_columns_,
                                  tmp.begin() + change * amount_of_columns_);
@@ -220,11 +219,6 @@ namespace la {
                                      std::vector<float>(amount_of_rows_ * amount_of_rows_)};
         for (size_t i = 0; i < data_.size(); i++) {
             tmp[0][i] = data_[i];
-        }
-        for(int i = 0; i < amount_of_columns_; i++) {
-            for (int j = 0; j < amount_of_columns_; j++) {
-                tmp[0][i] = ((*this)(i, j));
-            }
         }
         for (size_t i = 0; i < amount_of_rows_; i++) {
             for (size_t j = 0; j < amount_of_columns_; j++) {
@@ -315,21 +309,21 @@ namespace la {
 
     matrix similarity_transformation(const matrix &R, const matrix &H) {
         matrix M(R.amount_of_columns_);
-        M = R;// * H;
+        M = R;
         M *= H;
         M *= inverse(R);
         return M;
     }
 
     bool can_similarity_transformation(const matrix &R, const matrix &H) {
-        return R.determinant() != 0;
+        return R.determinant() != 0 ;
     }
 
     matrix matrix::principal_leading_submatrix(const size_t dim) const{
-        matrix submatrix(dim, dim, dim);
+        matrix submatrix(dim, dim);
         for (size_t i = 0; i < dim; i++) {
             for (size_t j = 0; j < dim; j++) {
-                submatrix(i, j) = data_[i * 10 + j];
+                submatrix(i, j) = (*this)(i, j);
             }
         }
         return submatrix;
@@ -340,9 +334,10 @@ namespace la {
         return principal_leading_submatrix(dim).determinant();
     }
 
-    matrix intermediate_step(const size_t dim, const matrix &from, const matrix &to) {
+
+    matrix intermediate_step(const matrix &from, const matrix &to) {
         matrix S = from;
-        for (size_t i = 0; i < dim; i++) {
+        for (size_t i = 0; i < S.get_w(); i++) {
             for (size_t j = 0; j < S.get_w(); j++) {
                 S(i, j) = to(i, j);
             }
@@ -351,20 +346,55 @@ namespace la {
     }
 
 
-    bool matrix::all_corner_minors_greater_rho(const size_t &rho) {
+    bool matrix::all_corner_minors_greater_rho(const float rho) {
         for (size_t i = 0; i < amount_of_columns_; i++) {
             if (principal_leading_minor(i) < rho) {
                 return false;
             }
-
         }
         return true;
     }
 
+    void matrix::set_w(size_t new_cols) {
+        amount_of_columns_ = new_cols;
+    }
 
-//    bool is_in_R(matrix &R, const float rho) {
-//        return R.all_corner_minors_greater_rho(rho);
-//    }
+    bool can_add(const matrix &A, const matrix &B) {
+        return A.amount_of_rows_ == B.amount_of_rows_ && A.amount_of_columns_ == B.amount_of_columns_;
+    }
+
+    bool can_sub(const matrix &A, const matrix &B) {
+        return can_add(A,B);
+    }
+
+    bool can_mult(const matrix &A, const matrix &B) {
+        return A.amount_of_columns_ == B.amount_of_rows_;
+    }
+
+    bool matrix::is_invertible() const {
+        return determinant() != 0;
+    }
+
+    bool can_div(const matrix &A, const matrix &B) {
+        return B.is_invertible() && A.amount_of_columns_ == B.amount_of_columns_;
+    }
+
+    size_t matrix::get_h() {
+        return amount_of_rows_;
+    }
+
+    size_t matrix::get_w() {
+        return amount_of_columns_;
+    }
+
+    void matrix::set_h(size_t new_rows) {
+        amount_of_rows_ = new_rows;
+    }
+
+
+    bool is_in_R(matrix &R, const float rho = 1) {
+        return R.all_corner_minors_greater_rho(rho);
+    }
 
 
     matrix transpose(matrix const &a) {
@@ -384,6 +414,5 @@ namespace la {
         }
         return result;
     }
-
 
 }
