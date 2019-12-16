@@ -8,7 +8,7 @@
 #include "LinearAlgebra.h"
 #include "GL/glut.h"
 #include "glui.h"
-#include "controls_id.h"
+//#include "controls_id.h"
 
 extern GLUI* glui;
 
@@ -16,15 +16,6 @@ namespace GLUI_la {
 
     using namespace la;
 
-    class MY_GLUI_Button : public GLUI_Button {
-        int ID;
-        std::string sign;
-    public:
-        explicit MY_GLUI_Button(const int ID_ = -1, const std::string& sign_ = "") : ID(ID_), sign(sign_) {}
-        void add_my_button(GLUI_CB (control_cb_func) );
-        int getID();
-        std::string getSign();
-    };
 
     class GLUI_matrix : public matrix {
         GLUI_Spinner *spinner_rows_;// = nullptr;

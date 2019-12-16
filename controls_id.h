@@ -8,12 +8,15 @@
 #include "GL/glut.h"
 #include "glui.h"
 
+
+
+
 #define MIN_SIZE 1
-#define MAX_SIZE 10
+#define MAX_SIZE 8
 
 
 #define ID_SPINNER_DIMENSION 100
-#define SIZE_ 2
+#define SIZE_ 3
 
 #define MY_BUTTON_WIDTH 45
 
@@ -46,7 +49,7 @@
 #define ID_CHECKBOX_IS_R_H 133
 
 
-static int wnd_x = 300;
+static int wnd_x = 600;
 static int wnd_y = 300;
 
 

@@ -132,14 +132,9 @@ namespace la {
                          amount_of_rows_, amount_of_columns_);
             throw std::runtime_error(error);
         }
-        //matrix tmp_matrix = principal_leading_submatrix(amount_of_columns_);
+
         std::vector<float> tmp(data_.begin(), data_.end());
 
-//        for(int i = amount_of_columns_-1; i >= 0; i--) {
-//            for (int j = amount_of_rows_ - 1; j >= 0; j--) {
-//                tmp.push_back((*this)(i, j));
-//            }
-//        }
         float res = 1.0f;
         for (size_t i = 0; i < amount_of_rows_; i++) {
             size_t change = i;
@@ -317,7 +312,7 @@ namespace la {
     }
 
     bool can_similarity_transformation(const matrix &R, const matrix &H) {
-        return R.determinant() != 0 ;
+        return R.is_square() && R.determinant() != 0 ;
     }
 
     matrix matrix::principal_leading_submatrix(const size_t dim) const{
@@ -332,6 +327,7 @@ namespace la {
 
 
     float matrix::principal_leading_minor(const size_t dim) {
+        std::cout << principal_leading_submatrix(dim).determinant() << std::endl;
         return principal_leading_submatrix(dim).determinant();
     }
 
@@ -348,7 +344,9 @@ namespace la {
 
 
     bool matrix::all_corner_minors_greater_rho(const float rho) {
-        for (size_t i = 0; i < amount_of_columns_; i++) {
+        if(!is_square())
+            return false;
+        for (size_t i = 1; i <= amount_of_columns_; i++) {
             if (principal_leading_minor(i) <= rho) {
                 return false;
             }
@@ -373,7 +371,7 @@ namespace la {
     }
 
     bool matrix::is_invertible() const {
-        return determinant() != 0;
+        return is_square() && determinant() != 0;
     }
 
     bool can_div(const matrix &A, const matrix &B) {
@@ -392,12 +390,14 @@ namespace la {
         amount_of_rows_ = new_rows;
     }
 
-    bool matrix::is_square() {
+    bool matrix::is_square() const {
         return amount_of_rows_ == amount_of_columns_;
     }
 
 
     bool matrix::is_lower_triangular() {
+        if(!is_square())
+            return false;
         for(size_t i = 0; i < amount_of_rows_;i++)
         {
             for(size_t j = 0; j < i;j++)
@@ -431,8 +431,9 @@ namespace la {
         return all_corner_minors_greater_rho(rho);
     }
 
-    bool matrix::is_rho_law_abiding(const matrix &R, const matrix &H, const float rho) {
-        matrix M = similarity_transformation(R, H);
+    bool is_rho_law_abiding(const matrix &R, const matrix &H, const float rho=0) {
+         matrix M = similarity_transformation(R, H);
+        return M.all_corner_minors_greater_rho(rho);
 
     }
 

@@ -15,9 +15,6 @@ using namespace GLUI_la;
 
 
 extern GLUI_matrix A, B, C;
-extern MY_GLUI_Button myGluiButtonSwap, myGluiButtonAdd,
-        myGluiButtonSub, myGluiButtonMult, myGluiButtonDiv,
-        myGluiButtonInsCInA, myGluiButtonInsCInB;
 extern std::string status_bar;
 void basic_calculator_create();
 void control_cb( int control );

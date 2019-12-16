@@ -90,7 +90,7 @@ namespace la {
 
         friend matrix intermediate_step(const size_t dim, const matrix& from, const matrix& to);
 
-        friend bool is_rho_law_abiding(const matrix& R, const matrix& H, const float rho = 0);
+        friend bool is_rho_law_abiding(const matrix& R, const matrix& H, const float rho );
 
         friend bool can_add(const matrix& A, const matrix& B);
 
@@ -114,7 +114,7 @@ namespace la {
 
         bool is_in_H(const float rho = 0);
 
-        bool is_square();
+        bool is_square() const;
 
         bool is_lower_triangular();
     };

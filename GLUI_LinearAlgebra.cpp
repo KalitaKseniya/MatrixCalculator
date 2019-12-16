@@ -4,7 +4,6 @@
 
 #include "GLUI_LinearAlgebra.h"
 
-
 GLUI* glui = nullptr;
 
 using namespace GLUI_la;
@@ -19,15 +18,6 @@ void GLUI_matrix::spinner_display(GLUI_CB (control_cb_func))
     glui->add_column_to_panel(panel_dimension, false);
     //set_listbox(control_cb_func);
 }
-
-//void GLUI_matrix::set_listbox(GLUI_CB (control_cb_func))
-//{
-//    listbox_pow = glui->add_listbox_to_panel(panel_dimension, "", NULL, -1, control_cb_func);
-//    listbox_pow->add_item(ID_LISTBOX_1, "1");
-//    listbox_pow->add_item(ID_LISTBOX_minus_1, "-1");
-//    listbox_pow->add_item(ID_LISTBOX_T, "T");
-//    listbox_pow->set_alignment(GLUI_ALIGN_RIGHT);
-//}
 
 
 void GLUI_matrix::set_spinner(GLUI_Panel* panel_dimension, GLUI_Spinner*& spinner,const std::string name, int val, GLUI_CB (control_cb_func) )
@@ -94,10 +84,7 @@ size_t GLUI_matrix::getSpinnerColumnsValue() {
     return amount_of_columns_;
 }
 
-//void GLUI_matrix::disableSpinners() {
-//    spinner_rows_->disable();
-//    spinner_columns_->disable();
-//}
+
 
 bool GLUI_matrix::dim_changed() {
     return data_.size() != amount_of_rows_ * amount_of_columns_ || getSpinnerColumnsValue() != amount_of_columns_  || getSpinnerRowsValue() != amount_of_rows_ ;
@@ -122,17 +109,4 @@ void GLUI_matrix::update_dim(const size_t new_rows, const size_t new_cols) {
     amount_of_rows_ = new_rows;
     amount_of_columns_ = new_cols;
 
-}
-
-void MY_GLUI_Button::add_my_button(GLUI_CB control_cb_func) {
-    GLUI_Button* tmp = new GLUI_Button(glui, sign, ID, control_cb_func);
-    tmp->set_w(MY_BUTTON_WIDTH);
-}
-
-std::string MY_GLUI_Button::getSign() {
-    return sign;
-}
-
-int MY_GLUI_Button::getID() {
-    return ID;
 }

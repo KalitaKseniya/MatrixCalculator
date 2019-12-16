@@ -17,5 +17,5 @@ include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} ${GLFW_INCLUDE_D
 
 
 
-add_executable(main main.cpp controls_id.h LinearAlgebra.h LinearAlgebra.cpp  GLUI_LinearAlgebra.h GLUI_LinearAlgebra.cpp BasicCalculator.h BasicCalculator.cpp ScienceCalculator.cpp ScienceCalculator.h)
+add_executable(main main.cpp controls_id.h LinearAlgebra.h LinearAlgebra.cpp  GLUI_LinearAlgebra.h GLUI_LinearAlgebra.cpp BasicCalculator.h BasicCalculator.cpp ScienceCalculator.cpp ScienceCalculator.h main_menu.cpp main_menu.h)
 target_link_libraries(main ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLFW_LIBRARIES} ${CMAKE_SOURCE_DIR}/libglui_static.a)
