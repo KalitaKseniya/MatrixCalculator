@@ -14,7 +14,8 @@ using namespace GLUI_la;
 
 extern GLUI_matrix R, H, M;
 extern float rho;
-extern int is_pressed_checkbox;
+extern float r;
+//extern int is_pressed_checkbox;
 //extern MY_GLUI_Button
 extern std::string status_bar_science;
 void science_calculator_create();

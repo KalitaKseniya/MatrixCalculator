@@ -90,6 +90,8 @@ namespace la {
 
         friend matrix intermediate_step(const size_t dim, const matrix& from, const matrix& to);
 
+        friend bool is_rho_law_abiding(const matrix& R, const matrix& H, const float rho = 0);
+
         friend bool can_add(const matrix& A, const matrix& B);
 
         friend bool can_sub(const matrix& A, const matrix& B);
@@ -108,8 +110,14 @@ namespace la {
 
         void set_w(size_t new_cols);
 
-        friend bool is_in_R(matrix& R, const float rho);
-    };//
+        bool is_in_R(const float rho = 0);
+
+        bool is_in_H(const float rho = 0);
+
+        bool is_square();
+
+        bool is_lower_triangular();
+    };
 
 
     matrix transpose(matrix const &a);

@@ -39,6 +39,11 @@
 #define ID_BUTTON_EXIT 127
 #define ID_BUTTON_TO_MENU 128
 
+#define ID_CHECKBOX_IS_IN_R_SET 129
+#define ID_CHECKBOX_IS_IN_H_SET 130
+#define ID_BUTTON_IS_RHO_LAW_ABIDING 131
+#define ID_BUTTON_BUILD_M 132
+#define ID_CHECKBOX_IS_R_H 133
 
 
 static int wnd_x = 300;

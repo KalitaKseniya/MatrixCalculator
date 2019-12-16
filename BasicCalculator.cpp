@@ -9,7 +9,7 @@ GLUI_matrix A = GLUI_matrix(SIZE_, SIZE_);
 GLUI_matrix B = GLUI_matrix(SIZE_, SIZE_);
 GLUI_matrix C = GLUI_matrix(SIZE_, SIZE_);
 
-std::string status_bar = "I'll show you the result of your actions";
+std::string status_bar = "";
 
 MY_GLUI_Button myGluiButtonSwap = MY_GLUI_Button(ID_BUTTON_SWAP, "swap A and B"),myGluiButtonAdd = MY_GLUI_Button(ID_BUTTON_ADD, "+"),
         myGluiButtonSub = MY_GLUI_Button(ID_BUTTON_SUB, "-"), myGluiButtonMult = MY_GLUI_Button(ID_BUTTON_MULT, "*"),
@@ -19,9 +19,9 @@ MY_GLUI_Button myGluiButtonSwap = MY_GLUI_Button(ID_BUTTON_SWAP, "swap A and B")
 MY_GLUI_Button myButtons[BUTTON_NUM] = {myGluiButtonSwap, myGluiButtonAdd,
                                         myGluiButtonSub, myGluiButtonMult, myGluiButtonDiv, myGluiButtonInsCInA, myGluiButtonInsCInB};
 
-bool need_to_update_glui()
+bool need_to_update_glui(const size_t C_row, const size_t C_col)
 {
-    return A.dim_changed() || B.dim_changed() || C.dim_changed();
+    return A.dim_changed() || B.dim_changed() || C_row != C.get_h() || C_col != C.get_w();
 }
 
 
@@ -42,7 +42,7 @@ void update_glui()
 void control_cb( int control ) {
 
     printf("callback: %d\n", control);
-
+    size_t C_row = C.get_h(), C_col = C.get_h();
     switch(control) {
         case ID_BUTTON_SWAP:
             std::swap(A, B);
@@ -52,7 +52,6 @@ void control_cb( int control ) {
             if (!can_add(A, B))
             {
                 status_bar = "Can't add (not equal amount of rows or columns)";
-                //  return;
             }
             else
             {
@@ -64,7 +63,6 @@ void control_cb( int control ) {
             if (!can_sub(A, B))
             {
                 status_bar = "Can't sub (not equal amount of rows or columns)";
-                // return;
             }
             else
             {
@@ -77,7 +75,6 @@ void control_cb( int control ) {
             if (!can_mult(A, B))
             {
                 status_bar = "Can't multiply (A(columns) != B(rows))";
-                // return;
             }
             else
             {
@@ -89,7 +86,6 @@ void control_cb( int control ) {
             if (!can_div(A, B))
             {
                 status_bar = "Can't divide (not equal amount of rows or columns)";
-                //return;
             }
             else
             {
@@ -114,7 +110,7 @@ void control_cb( int control ) {
     }
     glui->sync_live();
     std::cout << A << std::endl << B << std::endl << C << std::endl ;
-    if(!need_to_update_glui())
+    if(!need_to_update_glui(C_row, C_col))
     {
         return;
     }
@@ -128,10 +124,6 @@ void basic_calculator_create()
     new GLUI_Button(glui, "to Menu", ID_BUTTON_TO_MENU, control_cb);
     A.spinner_display(control_cb);
     A.matrix_display(control_cb, take_name(A));
-//    for(size_t i = 0; i < BUTTON_NUM-2 ;i++)
-//    {
-//        myButtons[i].add_my_button( control_cb);
-//    }
     new GLUI_Button(glui, "swap A and B",  ID_BUTTON_SWAP, control_cb);
     new GLUI_Button(glui, "+",  ID_BUTTON_ADD, control_cb);
     new GLUI_Button(glui, "-",  ID_BUTTON_SUB, control_cb);
