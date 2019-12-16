@@ -18,6 +18,27 @@ MY_GLUI_Button myGluiButtonSwap = MY_GLUI_Button(ID_BUTTON_SWAP, "swap A and B")
 
 MY_GLUI_Button myButtons[BUTTON_NUM] = {myGluiButtonSwap, myGluiButtonAdd,
                                         myGluiButtonSub, myGluiButtonMult, myGluiButtonDiv, myGluiButtonInsCInA, myGluiButtonInsCInB};
+
+bool need_to_update_glui()
+{
+    return A.dim_changed() || B.dim_changed() || C.dim_changed();
+}
+
+
+void update_glui()
+{
+    if(A.dim_changed())
+    {
+        A.update_dim(A.getSpinnerRowsValue(), A.getSpinnerColumnsValue());
+    }
+    if(B.dim_changed())
+    {
+        B.update_dim(B.getSpinnerRowsValue(), B.getSpinnerColumnsValue());
+    }
+
+    glui->close();
+    basic_calculator_create();
+}
 void control_cb( int control ) {
 
     printf("callback: %d\n", control);
@@ -38,7 +59,6 @@ void control_cb( int control ) {
                 C = A + B;
                 status_bar = "Successfully add";
             }
-
             break;
         case ID_BUTTON_SUB:
             if (!can_sub(A, B))
@@ -46,8 +66,12 @@ void control_cb( int control ) {
                 status_bar = "Can't sub (not equal amount of rows or columns)";
                 // return;
             }
-            C = A - B;
-            status_bar = "Successfully ";
+            else
+            {
+                C = A - B;
+                status_bar = "Successfully ";
+            }
+
             break;
         case ID_BUTTON_MULT:
             if (!can_mult(A, B))
@@ -55,8 +79,11 @@ void control_cb( int control ) {
                 status_bar = "Can't multiply (A(columns) != B(rows))";
                 // return;
             }
-            C = A * B;
-            status_bar = "Successfully multiplied";
+            else
+            {
+                C = A * B;
+                status_bar = "Successfully multiplied";
+            }
             break;
         case ID_BUTTON_DIV:
             if (!can_div(A, B))
@@ -64,9 +91,12 @@ void control_cb( int control ) {
                 status_bar = "Can't divide (not equal amount of rows or columns)";
                 //return;
             }
-            C = A;
-            C *= inverse(B);
-            status_bar = "Successfully divided";
+            else
+            {
+                C = A;
+                C *= inverse(B);
+                status_bar = "Successfully divided";
+            }
             break;
         case ID_BUTTON_InsCInA:
             A = C;
@@ -76,56 +106,47 @@ void control_cb( int control ) {
             B = C;
             status_bar = "Successfully insert C in B";
             break;
-        default:
+        case ID_BUTTON_TO_MENU:
+//            menu();
             return;
+        default:
+            break;
     }
     glui->sync_live();
-    std::cout <<"A:"<< A << std::endl<<"B:" << B << std::endl << std::endl <<"C:"<< C << std::endl;
-//    std::cout << A.get_w() << A.getSpinnerRowsValue() << A.get_h() << A.getSpinnerColumnsValue();
-//    bool flag = 1;
-//    if(A.dim_changed())
-//    {
-//        A.update_dim();
-//        flag = 0;
-//    }
-//    if(B.dim_changed())
-//    {
-//        B.update_dim();
-//        flag = 0;
-//    }
-//    if(flag)
-//    {
-//        return;
-//    }
-   // glui->set_viewport();
-    glui->close();
-    basic_calculator_create();
+    std::cout << A << std::endl << B << std::endl << C << std::endl ;
+    if(!need_to_update_glui())
+    {
+        return;
+    }
+    update_glui();
 }
 
 void basic_calculator_create()
 {
+
     glui = GLUI_Master.create_glui( "Basic matrix calculator", 0, wnd_x, wnd_y);
-    A.spinner_display(glui, control_cb);
-    A.matrix_display(glui, control_cb, take_name(A));
-//    GLUI_RadioGroup* radiogroup = new GLUI_RadioGroup;
-    //  glui->add_radiogroup();
-//    GLUI_RadioButton* radiobutton;
-//
-//    radiobutton = glui->add_radiobutton_to_group(radiogroup, "");
-
-    for(size_t i = 0; i < BUTTON_NUM ;i++)
-    {
-        myButtons[i].add_my_button(glui, control_cb);
-        //glui->add_column(false);
-    }
-    B.spinner_display(glui, control_cb);
-    B.matrix_display(glui, control_cb, take_name(B));
-    glui->add_button("=");
-    C.spinner_display(glui, control_cb);
-    C.disableSpinners();
-    C.matrix_display(glui, control_cb, take_name(C));
-    glui->add_statictext("Status bar: "+status_bar)->set_alignment(GLUI_ALIGN_LEFT);
-
+    new GLUI_Button(glui, "to Menu", ID_BUTTON_TO_MENU, control_cb);
+    A.spinner_display(control_cb);
+    A.matrix_display(control_cb, take_name(A));
+//    for(size_t i = 0; i < BUTTON_NUM-2 ;i++)
+//    {
+//        myButtons[i].add_my_button( control_cb);
+//    }
+    new GLUI_Button(glui, "swap A and B",  ID_BUTTON_SWAP, control_cb);
+    new GLUI_Button(glui, "+",  ID_BUTTON_ADD, control_cb);
+    new GLUI_Button(glui, "-",  ID_BUTTON_SUB, control_cb);
+    new GLUI_Button(glui, "*",  ID_BUTTON_MULT, control_cb);
+    new GLUI_Button(glui, "/",  ID_BUTTON_DIV, control_cb);
+    B.spinner_display(control_cb);
+    B.matrix_display(control_cb, take_name(B));
+    glui->add_button("=")->disable();
+    GLUI_Panel* panel_C = new GLUI_Panel(glui, "");
+    new GLUI_Button(panel_C, myGluiButtonInsCInA.getSign(), myGluiButtonInsCInA.getID(), control_cb);//set_w(MY_BUTTON_WIDTH);
+    new GLUI_Column(panel_C);
+    new GLUI_Button(panel_C, myGluiButtonInsCInB.getSign(), myGluiButtonInsCInA.getID(), control_cb);//->set_w(MY_BUTTON_WIDTH);
+    C.matrix_display(control_cb, take_name(C));
+    GLUI_StaticText* st = new GLUI_StaticText(glui, "Status bar: "+status_bar);
+    st->set_alignment(GLUI_ALIGN_LEFT);
 }
 
 

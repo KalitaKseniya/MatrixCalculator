@@ -20,32 +20,17 @@ namespace GLUI_la {
         int ID;
         std::string sign;
     public:
-        MY_GLUI_Button(const int ID_ = -1, const std::string& sign_ = "") : ID(ID_), sign(sign_) {}
-        void add_my_button(GLUI* glui_wnd, GLUI_CB (control_cb_func) );
+        explicit MY_GLUI_Button(const int ID_ = -1, const std::string& sign_ = "") : ID(ID_), sign(sign_) {}
+        void add_my_button(GLUI_CB (control_cb_func) );
+        int getID();
+        std::string getSign();
     };
 
     class GLUI_matrix : public matrix {
-        GLUI_Spinner *spinner_rows_;
-        GLUI_Spinner *spinner_columns_;
-        GLUI_Panel *panel_dimension;//need locally
-        GLUI_EditText **edittext_data_;//not need
-        GLUI_Panel *panel_matrix;//need lolcally
-        size_t spinner_amount_of_rows_;
-        size_t spinner_amount_of_columns_;
-
+        GLUI_Spinner *spinner_rows_;// = nullptr;
+        GLUI_Spinner *spinner_columns_;// = nullptr;
     public:
-        GLUI_matrix(const size_t &row_, const size_t &col_) : matrix(row_, col_) {
-            spinner_rows_ = new GLUI_Spinner;
-            spinner_columns_ = new GLUI_Spinner;
-            panel_dimension = new GLUI_Panel;
-            edittext_data_ = new GLUI_EditText *[MAX_SIZE];
-            for (int i = 0; i < MAX_SIZE; i++) {
-                edittext_data_[i] = new GLUI_EditText[MAX_SIZE];
-            }
-            panel_matrix = new GLUI_Panel;
-            spinner_amount_of_rows_ = row_;
-            spinner_amount_of_columns_ = col_;
-        }
+        GLUI_matrix(const size_t &row_, const size_t &col_) : matrix(row_, col_) {}
 
         GLUI_matrix() : GLUI_matrix(0, 0) {}
 
@@ -55,23 +40,23 @@ namespace GLUI_la {
 
         size_t getSpinnerColumnsValue();
 
-        void disableSpinners();
-
         GLUI_matrix &operator=(GLUI_matrix const &M);
 
         //add dimensions(as spinners) groupped in the panel to the glui_wnd
-        void spinner_display(GLUI *glui_wnd, GLUI_CB (control_cb_func));
+        void spinner_display(GLUI_CB (control_cb_func));
 
-        void set_spinner(GLUI *glui_wnd, GLUI_Spinner *&spinner, const std::string name, int val,
+        void set_spinner(GLUI_Panel* panel_dimension, GLUI_Spinner *&spinner, const std::string name, int val,
                          GLUI_CB (control_cb_func));
 
-        void matrix_display(GLUI *glui_wnd, GLUI_CB (control_cb_func), const std::string& matrix_name = "");
+        void set_listbox(GLUI* glui_wnd, GLUI_CB (control_cb_func));
 
-        void lower_triangular_matrix_display(GLUI *glui_wnd, GLUI_CB control_cb_func);
+        void matrix_display(GLUI_CB (control_cb_func), const std::string& matrix_name = "");
+
+        void lower_triangular_matrix_display(GLUI_CB control_cb_func, const std::string& matrix_name = "");
 
         bool dim_changed();
 
-        void update_dim();
+        void update_dim(const size_t,const size_t);
     };
 }
 

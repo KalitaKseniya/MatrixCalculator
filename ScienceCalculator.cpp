@@ -71,10 +71,10 @@ void control_science_cb( int control ) {
 
 void science_calculator_create()
 {
-    glui = GLUI_Master.create_glui( "Science matrix calculator", 0, 1, 1);
-    R.spinner_display(glui, control_science_cb);
+    glui = GLUI_Master.create_glui( "Advanced matrix calculator", 0, wnd_x, wnd_y);
+    R.spinner_display( control_science_cb);
     //  R.spinners_are_equal();
-    R.lower_triangular_matrix_display(glui, control_science_cb);
+    R.lower_triangular_matrix_display(control_science_cb);
     //R.
     GLUI_Panel* panel_R_set = new GLUI_Panel;
     panel_R_set = glui->add_panel("");
@@ -85,8 +85,8 @@ void science_calculator_create()
     listbox->add_item(-1, "...");
     listbox->add_item(ID_YES, "Yes");
     listbox->add_item(ID_NO, "No");
-    H.spinner_display(glui, control_science_cb);
-    H.matrix_display(glui, control_science_cb);
+    H.spinner_display( control_science_cb);
+    H.matrix_display(control_science_cb);
     glui->add_button("Is in H_set?", ID_BUTTON_IS_IN_H, control_science_cb);
     GLUI_Panel* panel = new GLUI_Panel;
     panel = glui->add_panel("");
