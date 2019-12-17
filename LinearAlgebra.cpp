@@ -400,7 +400,7 @@ namespace la {
             return false;
         for(size_t i = 0; i < amount_of_rows_;i++)
         {
-            for(size_t j = 0; j < i;j++)
+            for(size_t j = i + 1; j < amount_of_columns_;j++)
             {
                if((*this)(i, j) != 0)
                {
