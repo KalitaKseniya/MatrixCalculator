@@ -47,6 +47,7 @@
 #define ID_BUTTON_IS_RHO_LAW_ABIDING 131
 #define ID_BUTTON_BUILD_M 132
 #define ID_CHECKBOX_IS_R_H 133
+#define ID_BUTTON_QUEST 1343
 
 
 static int wnd_x = 600;

@@ -312,7 +312,7 @@ namespace la {
     }
 
     bool can_similarity_transformation(const matrix &R, const matrix &H) {
-        return R.is_square() && R.determinant() != 0 ;
+        return R.is_square() && H.is_square() && R.amount_of_columns_ == H.amount_of_columns_ && R.determinant() != 0 ;
     }
 
     matrix matrix::principal_leading_submatrix(const size_t dim) const{
@@ -432,7 +432,9 @@ namespace la {
     }
 
     bool is_rho_law_abiding(const matrix &R, const matrix &H, const float rho=0) {
-         matrix M = similarity_transformation(R, H);
+        if(!can_similarity_transformation(R, H))
+            return false;
+        matrix M = similarity_transformation(R, H);
         return M.all_corner_minors_greater_rho(rho);
 
     }

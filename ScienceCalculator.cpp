@@ -30,12 +30,34 @@ void update_advanced_glui() {
     advanced_calculator_create();
 }
 
+GLUI* glui_help = nullptr;
+
+void control_cb_help(int control)
+{
+    switch (control)
+    {
+        case ID_BUTTON_TO_MENU:
+            glui_help->close();
+            break;
+        default:
+            break;
+    }
+}
+
+
+void help_subwnd_create()
+{
+    glui_help = GLUI_Master.create_glui_subwindow(glui->get_glut_window_id(),GLUI_SUBWINDOW_BOTTOM);
+    new GLUI_StaticText(glui_help, "For help read my article about the invariance of corner");
+    new GLUI_StaticText(glui_help, "minors' positivity on pfmt.by");
+    new GLUI_Button(glui_help, "close", ID_BUTTON_TO_MENU, control_cb_help);
+}
 
 void control_advanced_cb( int control ) {
 
     printf("callback: %d\n", control);
     size_t M_col = M.get_w(), M_row = M.get_h();
-    bool flag = 1;
+    bool flag = true;
     switch(control) {
         case ID_SPINNER_DIMENSION:
             break;
@@ -57,16 +79,20 @@ void control_advanced_cb( int control ) {
             glui->close();
             menu_create();
             return;
+        case ID_BUTTON_QUEST:
+            help_subwnd_create();
+            break;
         default:
             return;
     }
+    status_bar_advanced = (flag) ? "Success" : "Failure";
     glui->sync_live();
     std::cout << R << std::endl << H << std::endl << M << std::endl ;
-    if(!need_to_update_advanced_glui(M_row, M_col))
+    if(flag && need_to_update_advanced_glui(M_row, M_col))
     {
-        return;
+        update_advanced_glui();
     }
-    update_advanced_glui();
+
 }
 
 
@@ -95,8 +121,9 @@ void advanced_calculator_create()
     new GLUI_Column(panel_R_H, false);
     GLUI_Checkbox* checkbox_R_H = new GLUI_Checkbox(panel_R_H, "yes", &is_pressed_checkbox_R_H, ID_CHECKBOX_IS_R_H , control_advanced_cb);
     checkbox_R_H->disable();
-    glui->add_statictext("Status bar: "+status_bar_advanced)->set_alignment(GLUI_ALIGN_LEFT);
-
+    GLUI_EditText* editTextStatusBar = new GLUI_EditText(glui, "Status bar:", status_bar_advanced, -1, control_advanced_cb);
+    editTextStatusBar->set_alignment(GLUI_ALIGN_LEFT);
+    new GLUI_Button(glui, "HELP", ID_BUTTON_QUEST, control_advanced_cb);
 }
 
 

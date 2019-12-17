@@ -34,10 +34,10 @@ void update_glui()
     basic_calculator_create();
 }
 void control_cb( int control ) {
-
+    std::cout << "I am heree";
     printf("callback: %d\n", control);
     size_t C_row = C.get_h(), C_col = C.get_h();
-    bool flag = 1;
+    bool flag = true;
     switch(control) {
         case ID_BUTTON_SWAP:
             std::swap(A, B);
