@@ -13,19 +13,10 @@ int is_pressed_checkbox_R_H = false;
 
 std::string status_bar_advanced = "";
 
-bool need_to_update_advanced_glui(const size_t M_row, const size_t M_col)
-{
-    return R.dim_changed() || H.dim_changed() || M_row != M.get_h() || M_col != M.get_w();
-}
 
 
 void update_advanced_glui() {
-    if (R.dim_changed()) {
-        R.update_dim(R.getSpinnerRowsValue(), R.getSpinnerColumnsValue());
-    }
-    if (H.dim_changed()) {
-        H.update_dim(H.getSpinnerRowsValue(), H.getSpinnerColumnsValue());
-    }
+
     glui->close();
     advanced_calculator_create();
 }
@@ -44,14 +35,24 @@ void control_cb_help(int control)
     }
 }
 
+void set_dims_from_spinners()
+{
+    if (R.dim_changed()) {
+        R.update_dim(R.getSpinnerRowsValue(), R.getSpinnerColumnsValue());
+    }
+    if (H.dim_changed()) {
+        H.update_dim(H.getSpinnerRowsValue(), H.getSpinnerColumnsValue());
+    }
+}
 
 void help_subwnd_create()
 {
     glui_help = GLUI_Master.create_glui_subwindow(glui->get_glut_window_id(),GLUI_SUBWINDOW_BOTTOM);
     new GLUI_StaticText(glui_help, "For help read my article about the invariance of corner");
-    new GLUI_StaticText(glui_help, "minors' positivity on pfmt.by");
+    new GLUI_StaticText(glui_help, "minors' positivity on pfmt.gsu.by");
     new GLUI_Button(glui_help, "close", ID_BUTTON_TO_MENU, control_cb_help);
 }
+
 
 void control_advanced_cb( int control ) {
 
@@ -60,20 +61,30 @@ void control_advanced_cb( int control ) {
     bool flag = true;
     switch(control) {
         case ID_SPINNER_DIMENSION:
-            break;
+            if(R.dim_changed() || H.dim_changed())
+            {
+                set_dims_from_spinners();
+                update_advanced_glui();
+            }
+            return;
         case ID_BUTTON_IS_IN_R:
-            is_pressed_checkbox_R_set = (flag = R.is_in_R()) ? 1 : 0;
+            is_pressed_checkbox_R_set = (R.is_in_R()) ? 1 : 0;
             break;
             case ID_BUTTON_IS_IN_H:
-                is_pressed_checkbox_H_set = (flag = H.is_in_H()) ? 1 : 0;
+                is_pressed_checkbox_H_set = (H.is_in_H()) ? 1 : 0;
                 break;
         case ID_BUTTON_BUILD_M:
-            if((flag = can_similarity_transformation(R, H))) {
+            if((flag = can_similarity_transformation(R, H)))
+            {
                 M = similarity_transformation(R, H);
+                if(M_col != M.get_w() || M_row != M.get_h())
+                {
+                    update_advanced_glui();
+                }
             }
             break;
         case ID_BUTTON_IS_RHO_LAW_ABIDING:
-            is_pressed_checkbox_R_H = (flag = is_rho_law_abiding(R, H, 0)) ? 1 : 0;
+            is_pressed_checkbox_R_H = (is_rho_law_abiding(R, H, 0)) ? 1 : 0;
             break;
         case ID_BUTTON_TO_MENU:
             glui->close();
@@ -88,11 +99,6 @@ void control_advanced_cb( int control ) {
     status_bar_advanced = (flag) ? "Success" : "Failure";
     glui->sync_live();
     std::cout << R << std::endl << H << std::endl << M << std::endl ;
-    if(flag && need_to_update_advanced_glui(M_row, M_col))
-    {
-        update_advanced_glui();
-    }
-
 }
 
 

@@ -395,24 +395,10 @@ namespace la {
     }
 
 
-    bool matrix::is_lower_triangular() {
-        if(!is_square())
-            return false;
-        for(size_t i = 0; i < amount_of_rows_;i++)
-        {
-            for(size_t j = i + 1; j < amount_of_columns_;j++)
-            {
-               if((*this)(i, j) != 0)
-               {
-                   return false;
-               }
-            }
-        }
-        return true;
-    }
+
 
     bool matrix::is_in_R(const float rho) {
-        if(!is_square() || !is_lower_triangular())
+        if(!is_square())
         {
             return false;
         }

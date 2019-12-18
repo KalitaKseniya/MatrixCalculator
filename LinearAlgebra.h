@@ -25,7 +25,7 @@ namespace la {
                                                           amount_of_rows_(rows),
                                                           amount_of_columns_(columns) {}
 
-        matrix(size_t const &dim) : data_(dim*dim),
+        explicit matrix(size_t const &dim) : data_(dim*dim),
                                     amount_of_rows_(dim),
                                     amount_of_columns_(dim) {}
 
@@ -116,7 +116,6 @@ namespace la {
 
         bool is_square() const;
 
-        bool is_lower_triangular();
     };
 
 

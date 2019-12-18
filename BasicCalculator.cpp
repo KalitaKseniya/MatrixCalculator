@@ -13,13 +13,12 @@ GLUI_matrix C = GLUI_matrix(SIZE_, SIZE_);
 std::string status_bar = "";
 
 
-bool need_to_update_glui(const size_t C_row, const size_t C_col)
+bool need_to_update_glui(const size_t C_row = C.get_h(), const size_t C_col = C.get_w())
 {
     return A.dim_changed() || B.dim_changed() || C_row != C.get_h() || C_col != C.get_w();
 }
 
-
-void update_glui()
+void set_dimensions_from_spinners()
 {
     if(A.dim_changed())
     {
@@ -29,16 +28,26 @@ void update_glui()
     {
         B.update_dim(B.getSpinnerRowsValue(), B.getSpinnerColumnsValue());
     }
+}
 
+void update_glui()
+{
     glui->close();
     basic_calculator_create();
 }
 void control_cb( int control ) {
-    std::cout << "I am heree";
     printf("callback: %d\n", control);
-    size_t C_row = C.get_h(), C_col = C.get_h();
+    size_t C_row = C.get_h(), C_col = C.get_w();
     bool flag = true;
     switch(control) {
+        case ID_SPINNER_DIMENSION:
+            if(need_to_update_glui())
+            {
+                set_dimensions_from_spinners();
+                update_glui();
+                glui->sync_live();
+            }
+            return;
         case ID_BUTTON_SWAP:
             std::swap(A, B);
             break;
@@ -78,7 +87,7 @@ void control_cb( int control ) {
             menu_create();
             return;
         default:
-            break;
+            return;
     }
     status_bar = (flag) ? "Success" : "Failure";
     glui->sync_live();
